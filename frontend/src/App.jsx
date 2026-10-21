@@ -212,7 +212,8 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Link
+  Link,
+  useLocation
 } from "react-router-dom";
 
 import { Bell, Lightbulb, Moon, Sun } from "lucide-react";
@@ -241,6 +242,13 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("theme") === "dark"
   );
+
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+
+  useEffect(() => {
+    // Sync token on location change
+    setToken(localStorage.getItem("token"));
+  }, [location]);
 
   useEffect(() => {
     document.documentElement.setAttribute(
@@ -287,7 +295,10 @@ const Navbar = () => {
         </Link>
 
         <div className="nav-links">
-          <Link to="/" className="nav-link">
+          <Link
+            to="/"
+            className={`nav-link ${location.pathname === "/" ? "nav-link-active" : ""}`}
+          >
             Home
           </Link>
 

@@ -6,13 +6,14 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
   const [profileForm, setProfileForm] = useState({ name: "", headline: "", bio: "", skills: "" });
 
   useEffect(() => {
-    const getProfile = async () => {
+    const fetchProfile = async () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -59,14 +60,15 @@ const Profile = () => {
       }
     };
 
-    getProfile();
+    fetchProfile();
   }, [navigate]);
 
-  const logout = () => {
+  const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
+  if (loading) {
   const saveProfile = async (event) => {
     event.preventDefault();
     setSaving(true);
@@ -87,53 +89,136 @@ const Profile = () => {
 
   if (error) {
     return (
-      <main className="auth-page">
-        <div className="auth-card">
-          <div className="form-message">
-            {error}
+      <main className="profile-page">
+        <div className="profile-container">
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Loading your profile...</p>
           </div>
         </div>
       </main>
     );
   }
 
-  if (!user) {
+  if (error) {
     return (
-      <main className="auth-page">
-        <p>Loading profile...</p>
+      <main className="profile-page">
+        <div className="profile-container">
+          <div className="form-message">{error}</div>
+        </div>
       </main>
     );
   }
 
+  if (!user) return null;
+
+  const followersList = user.followers || [];
+  const followingList = user.following || [];
+
   return (
     <main className="profile-page">
-
       <div className="profile-container">
-
+        {/* PROFILE CARD */}
         <div className="profile-card">
+          <div className="profile-header-wrapper">
+            <div className="profile-header-left">
+              <UserAvatar user={user} size="xl" />
 
-          <div className="profile-header">
+              <div className="profile-header-info">
+                <div className="profile-title-badge">
+                  <h1>{user.name}</h1>
+                  <span className="badge-role">
+                    <Sparkles size={13} /> Innovator
+                  </span>
+                </div>
 
-            <div className="profile-avatar">
-              {user.name.charAt(0).toUpperCase()}
+                <p className="profile-email">{user.email}</p>
+
+                {user.location && (
+                  <div className="profile-meta-item">
+                    <MapPin size={15} /> {user.location}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div>
-              <h1>{user.name}</h1>
+            <div className="profile-header-actions">
+              <Link to="/profile/edit" className="btn btn-primary">
+                <Edit size={16} /> Edit Profile
+              </Link>
 
               <p>
                 {user.headline || `VicharManthan ${user.role}`}
               </p>
             </div>
-
           </div>
 
+          {/* BIO */}
+          <div className="profile-section">
+            <h3 className="section-subtitle">About Me</h3>
+            <p className="profile-bio">
+              {user.bio ? (
+                user.bio
+              ) : (
+                <span className="text-muted-italic">
+                  No bio added yet. Click "Edit Profile" to share your background and vision!
+                </span>
+              )}
+            </p>
+          </div>
 
-          <div className="profile-info">
+          {/* SKILLS */}
+          <div className="profile-section">
+            <h3 className="section-subtitle">Skills & Expertise</h3>
+            {user.skills && user.skills.length > 0 ? (
+              <div className="skills-grid">
+                {user.skills.map((skill, idx) => (
+                  <SkillTag key={idx} skill={skill} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-italic">No skills listed yet.</p>
+            )}
+          </div>
 
-            <div className="info-box">
-              <small>Name</small>
-              <strong>{user.name}</strong>
+          {/* SOCIAL & WEBSITE LINKS */}
+          {(user.website || user.github || user.linkedin) && (
+            <div className="profile-section">
+              <h3 className="section-subtitle">Links & Presence</h3>
+              <div className="links-row">
+                {user.website && (
+                  <a
+                    href={user.website.startsWith("http") ? user.website : `https://${user.website}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-link-btn"
+                  >
+                    <Globe size={16} /> {user.website.replace(/^https?:\/\//, "")}
+                  </a>
+                )}
+
+                {user.github && (
+                  <a
+                    href={user.github.startsWith("http") ? user.github : `https://github.com/${user.github.replace(/^@/, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-link-btn"
+                  >
+                    <GithubIcon size={16} /> GitHub
+                  </a>
+                )}
+
+                {user.linkedin && (
+                  <a
+                    href={user.linkedin.startsWith("http") ? user.linkedin : `https://linkedin.com/in/${user.linkedin}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-link-btn"
+                  >
+                    <LinkedinIcon size={16} /> LinkedIn
+                  </a>
+                )}
+              </div>
             </div>
 
             {user.bio && <div className="info-box"><small>About</small><strong>{user.bio}</strong></div>}
@@ -144,20 +229,31 @@ const Profile = () => {
               <strong>{user.email}</strong>
             </div>
 
-            <div className="info-box">
-              <small>Account ID</small>
-              <strong>{user._id}</strong>
+            <div
+              className="stat-card stat-card-interactive"
+              onClick={() => setModalType("following")}
+              title="Click to view following"
+            >
+              <div className="stat-icon">
+                <Users size={20} />
+              </div>
+              <div className="stat-content">
+                <span className="stat-value">{followingList.length}</span>
+                <span className="stat-label">Following</span>
+              </div>
             </div>
 
-            <div className="info-box">
-              <small>Account Created</small>
-              <strong>
-                {new Date(
-                  user.createdAt
-                ).toLocaleDateString()}
-              </strong>
+            <div className="stat-card">
+              <div className="stat-icon">
+                <Calendar size={20} />
+              </div>
+              <div className="stat-content">
+                <span className="stat-value">
+                  {user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "Member"}
+                </span>
+                <span className="stat-label">Joined</span>
+              </div>
             </div>
-
           </div>
 
           <form className="profile-edit-form" onSubmit={saveProfile}>
@@ -176,18 +272,35 @@ const Profile = () => {
           </form>
 
 
-          <button
-            className="btn btn-danger"
-            onClick={logout}
-          >
-            <LogOut size={17} />
-            Logout
-          </button>
-
+            <div className="ideas-empty-card">
+              <div className="ideas-empty-icon">
+                <Lightbulb size={28} />
+              </div>
+              <h4>No ideas published yet</h4>
+              <p>
+                Sharing startup ideas helps connect you with potential co-founders, advisors, and team members.
+              </p>
+            </div>
+          </div>
         </div>
-
       </div>
 
+      {/* FOLLOWERS / FOLLOWING MODAL */}
+      {modalType === "followers" && (
+        <FollowersModal
+          title="Followers"
+          list={followersList}
+          onClose={() => setModalType(null)}
+        />
+      )}
+
+      {modalType === "following" && (
+        <FollowersModal
+          title="Following"
+          list={followingList}
+          onClose={() => setModalType(null)}
+        />
+      )}
     </main>
   );
 };

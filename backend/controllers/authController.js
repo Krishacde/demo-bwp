@@ -157,7 +157,10 @@ const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(
       req.user._id
-    ).select("-password");
+    )
+      .select("-password")
+      .populate("followers", "name avatar email")
+      .populate("following", "name avatar email");
 
     if (!user) {
       const error = new Error(
