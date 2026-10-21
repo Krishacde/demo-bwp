@@ -1,34 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import {
-  LogOut,
-  Edit,
-  MapPin,
-  Globe,
-  Users,
-  Lightbulb,
-  Sparkles,
-  Calendar
-} from "lucide-react";
-import UserAvatar from "../components/UserAvatar";
-import SkillTag from "../components/SkillTag";
-import FollowersModal from "../components/FollowersModal";
-import { getAuthUser } from "../api/userApi";
-
-const GithubIcon = ({ size = 16 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-    <path d="M9 18c-4.51 2-5-2-7-2" />
-  </svg>
-);
-
-const LinkedinIcon = ({ size = 16 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-    <rect width="4" height="12" x="2" y="9" />
-    <circle cx="4" cy="4" r="2" />
-  </svg>
-);
+import { useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -36,7 +8,9 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [modalType, setModalType] = useState(null); // 'followers' | 'following' | null
+  const [notice, setNotice] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: "", headline: "", bio: "", skills: "" });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -48,16 +22,41 @@ const Profile = () => {
       }
 
       try {
-        setLoading(true);
-        const userData = await getAuthUser();
-        setUser(userData);
-      } catch (err) {
-        setError(err.message || "Failed to load profile");
-        setTimeout(() => {
-          navigate("/login");
-        }, 1500);
-      } finally {
-        setLoading(false);
+        const response = await fetch(
+          "http://localhost:5000/api/auth/me",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          localStorage.removeItem("token");
+
+          setError(data.message);
+
+          setTimeout(() => {
+            navigate("/login");
+          }, 1200);
+
+          return;
+        }
+
+        setUser(data.user);
+        setProfileForm({
+          name: data.user.name || "",
+          headline: data.user.headline || "",
+          bio: data.user.bio || "",
+          skills: (data.user.skills || []).join(", ")
+        });
+
+      } catch {
+        setError(
+          "Unable to connect to the server"
+        );
       }
     };
 
@@ -70,6 +69,25 @@ const Profile = () => {
   };
 
   if (loading) {
+  const saveProfile = async (event) => {
+    event.preventDefault();
+    setSaving(true);
+    setNotice("");
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify({ ...profileForm, skills: profileForm.skills.split(",").map((skill) => skill.trim()).filter(Boolean) })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Could not save your profile.");
+      setUser(data.user);
+      setNotice("Profile saved.");
+    } catch (saveError) { setNotice(saveError.message); }
+    finally { setSaving(false); }
+  };
+
+  if (error) {
     return (
       <main className="profile-page">
         <div className="profile-container">
@@ -129,9 +147,9 @@ const Profile = () => {
                 <Edit size={16} /> Edit Profile
               </Link>
 
-              <button className="btn btn-secondary btn-danger-soft" onClick={handleLogout}>
-                <LogOut size={16} /> Logout
-              </button>
+              <p>
+                {user.headline || `VicharManthan ${user.role}`}
+              </p>
             </div>
           </div>
 
@@ -202,22 +220,13 @@ const Profile = () => {
                 )}
               </div>
             </div>
-          )}
 
-          {/* STATS ROW */}
-          <div className="profile-stats-grid">
-            <div
-              className="stat-card stat-card-interactive"
-              onClick={() => setModalType("followers")}
-              title="Click to view followers"
-            >
-              <div className="stat-icon">
-                <Users size={20} />
-              </div>
-              <div className="stat-content">
-                <span className="stat-value">{followersList.length}</span>
-                <span className="stat-label">Followers</span>
-              </div>
+            {user.bio && <div className="info-box"><small>About</small><strong>{user.bio}</strong></div>}
+            {user.skills?.length > 0 && <div className="info-box"><small>Skills</small><strong>{user.skills.join(" · ")}</strong></div>}
+
+            <div className="info-box">
+              <small>Email</small>
+              <strong>{user.email}</strong>
             </div>
 
             <div
@@ -247,13 +256,21 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* IDEAS SECTION */}
-          <div className="profile-section profile-ideas-section">
-            <div className="section-header-row">
-              <h3 className="section-subtitle">
-                <Lightbulb size={18} /> Ideas & Projects
-              </h3>
-            </div>
+          <form className="profile-edit-form" onSubmit={saveProfile}>
+            <h2>Edit your profile</h2>
+            {notice && <p role="status">{notice}</p>}
+            <label className="form-label" htmlFor="profile-name">Name</label>
+            <input id="profile-name" className="form-input" value={profileForm.name} onChange={(event) => setProfileForm({ ...profileForm, name: event.target.value })} required maxLength={80} />
+            <label className="form-label" htmlFor="profile-headline">Headline</label>
+            <input id="profile-headline" className="form-input" placeholder="Founder building in climate tech" value={profileForm.headline} onChange={(event) => setProfileForm({ ...profileForm, headline: event.target.value })} maxLength={100} />
+            <label className="form-label" htmlFor="profile-bio">About you</label>
+            <textarea id="profile-bio" className="form-input" placeholder="What are you interested in building?" value={profileForm.bio} onChange={(event) => setProfileForm({ ...profileForm, bio: event.target.value })} maxLength={1000} />
+            <label className="form-label" htmlFor="profile-skills">Skills</label>
+            <input id="profile-skills" className="form-input" placeholder="React, product design, research" value={profileForm.skills} onChange={(event) => setProfileForm({ ...profileForm, skills: event.target.value })} />
+            <small>Separate skills with commas.</small>
+            <button className="btn btn-primary" type="submit" disabled={saving}>{saving ? "Saving..." : "Save profile"}</button>
+          </form>
+
 
             <div className="ideas-empty-card">
               <div className="ideas-empty-icon">

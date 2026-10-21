@@ -182,6 +182,9 @@ a {
     color 0.2s ease;
 }
 
+.notification-nav-link { display: inline-flex; align-items: center; gap: 6px; }
+.notification-nav-count { display: inline-grid; min-width: 18px; height: 18px; place-items: center; padding: 0 4px; border-radius: 10px; background: var(--primary); color: #fff; font-size: 10px; font-weight: 750; }
+
 .nav-link:hover {
   color: var(--text);
   background: var(--primary-light);
@@ -832,6 +835,18 @@ a {
 .info-box strong {
   font-size: 15px;
 }
+
+.profile-edit-form {
+  display: grid;
+  gap: 10px;
+  padding-top: 26px;
+  margin: 10px 0 28px;
+  border-top: 1px solid var(--border);
+}
+
+.profile-edit-form h2 { margin: 0 0 8px; font-size: 20px; }
+.profile-edit-form textarea { min-height: 100px; }
+.profile-edit-form small { color: var(--text-muted); }
 
 
 /* =========================
