@@ -15,6 +15,10 @@ const ideaSchema = new mongoose.Schema(
       trim: true
     },
 
+    problem: { type: String, trim: true, maxlength: 2000, default: "" },
+    solution: { type: String, trim: true, maxlength: 2000, default: "" },
+    lookingFor: { type: String, trim: true, maxlength: 1000, default: "" },
+
     category: {
       type: String,
       required: [true, "Category is required"],

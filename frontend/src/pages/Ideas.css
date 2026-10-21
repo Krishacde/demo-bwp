@@ -122,6 +122,11 @@ textarea.form-input {
   border-color: var(--primary);
 }
 
+.idea-card-title { color: inherit; text-decoration: none; }
+.idea-card-title:hover { color: var(--primary-dark); }
+.idea-card-actions { display: flex; flex-wrap: wrap; gap: 9px; padding-top: 14px; }
+.idea-card-actions .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 12px; font-size: 13px; }
+
 .idea-badges {
   display: flex;
   flex-wrap: wrap;
@@ -249,6 +254,37 @@ textarea.form-input {
   font-size: 32px;
   letter-spacing: -0.7px;
 }
+
+.idea-collaboration-form,
+.idea-collaboration-panel {
+  margin-top: 28px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface, #fff);
+}
+
+.idea-collaboration-form h3,
+.idea-collaboration-panel h3,
+.idea-chat h4 { margin: 0 0 10px; }
+.idea-collaboration-form p,
+.idea-collaboration-panel p { line-height: 1.55; }
+.idea-collaboration-form textarea { min-height: 100px; margin: 12px 0; }
+.idea-request-card { padding: 14px 0; border-top: 1px solid var(--border); }
+.idea-author-link { color: inherit; text-decoration: none; }
+.idea-author-link:hover { color: var(--primary); text-decoration: underline; }
+.idea-direct-message { display: inline-flex; margin: -8px 0 22px; }
+.idea-team-list { display: grid; gap: 8px; }
+.idea-team-member { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.idea-team-name { color: var(--text); font-weight: 650; text-decoration: none; }
+.idea-team-member > span { flex: 1; color: var(--text-muted); font-size: 12px; }
+.idea-team-message { display: inline-flex; align-items: center; gap: 5px; color: var(--primary-dark); font-size: 12px; text-decoration: none; }
+.idea-open-messages { display: inline-flex; align-items: center; gap: 7px; margin-top: 10px; text-decoration: none; }
+.idea-next-step { padding: 12px; border-left: 3px solid var(--primary); background: var(--surface-soft); color: var(--text-light); }
+.request-status { text-transform: capitalize; font-weight: 700; }
+.request-status-pending { color: var(--primary-dark); }
+.request-status-accepted { color: var(--green); }
+.request-status-rejected { color: var(--danger); }
 
 .idea-meta {
   display: flex;

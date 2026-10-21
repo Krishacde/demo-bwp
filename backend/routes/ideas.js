@@ -8,15 +8,25 @@ const {
   deleteIdea
 } = require("../controllers/ideaController");
 
-const { protect } = require("../middleware/auth");
+// const { protect } = require("../middleware/auth");
+
 
 const router = express.Router();
+const {
+  protect,
+  authorizeRoles
+} = require("../middleware/auth");
+
+router.post(
+  "/",
+  protect,
+  authorizeRoles("founder"),
+  createIdea
+);
 
 router.get("/", getIdeas);
 
 router.get("/:id", getIdeaById);
-
-router.post("/", protect, createIdea);
 
 router.put("/:id", protect, updateIdea);
 

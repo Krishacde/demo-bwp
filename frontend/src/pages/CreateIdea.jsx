@@ -8,6 +8,9 @@ import "./Ideas.css";
 const emptyForm = {
   title: "",
   description: "",
+  problem: "",
+  solution: "",
+  lookingFor: "",
   category: "",
   stage: "Idea",
   requiredSkills: "",
@@ -62,6 +65,9 @@ const CreateIdea = () => {
         setForm({
           title: data.idea.title,
           description: data.idea.description,
+          problem: data.idea.problem || "",
+          solution: data.idea.solution || "",
+          lookingFor: data.idea.lookingFor || "",
           category: data.idea.category,
           stage: data.idea.stage,
           requiredSkills: data.idea.requiredSkills.join(", "),
@@ -69,7 +75,7 @@ const CreateIdea = () => {
           tags: data.idea.tags.join(", ")
         });
 
-      } catch (error) {
+      } catch {
         setMessage(
           "Unable to connect to the server"
         );
@@ -108,6 +114,9 @@ const CreateIdea = () => {
           body: JSON.stringify({
             title: form.title,
             description: form.description,
+            problem: form.problem,
+            solution: form.solution,
+            lookingFor: form.lookingFor,
             category: form.category,
             stage: form.stage,
             requiredSkills: toList(form.requiredSkills),
@@ -126,7 +135,7 @@ const CreateIdea = () => {
 
       navigate(`/ideas/${data.idea._id}`);
 
-    } catch (error) {
+    } catch {
       setMessage(
         "Unable to connect to the server"
       );
@@ -199,6 +208,21 @@ const CreateIdea = () => {
               onChange={handleChange}
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="problem">Problem to solve</label>
+            <textarea id="problem" className="form-input" name="problem" placeholder="Who has this problem and why does it matter?" value={form.problem} onChange={handleChange} maxLength={2000} />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="solution">Your proposed solution</label>
+            <textarea id="solution" className="form-input" name="solution" placeholder="How will your product or service help?" value={form.solution} onChange={handleChange} maxLength={2000} />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="lookingFor">People and skills you need</label>
+            <textarea id="lookingFor" className="form-input" name="lookingFor" placeholder="For example: a designer to help shape the first prototype" value={form.lookingFor} onChange={handleChange} maxLength={1000} />
           </div>
 
 

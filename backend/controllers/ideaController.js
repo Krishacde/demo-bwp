@@ -4,6 +4,9 @@ const Idea = require("../models/Idea");
 const ideaFields = [
   "title",
   "description",
+  "problem",
+  "solution",
+  "lookingFor",
   "category",
   "stage",
   "requiredSkills",
@@ -62,7 +65,8 @@ const getIdeas = async (req, res, next) => {
 const getIdeaById = async (req, res, next) => {
   try {
     const idea = await Idea.findById(req.params.id)
-      .populate("author", "name email");
+      .populate("author", "name email")
+      .populate("teamMembers", "name role headline");
 
     if (!idea) {
       const error = new Error(
