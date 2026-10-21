@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, MessageCircle, UserRound } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 const PublicUserProfile = () => {
   const { userId } = useParams();
@@ -10,7 +11,7 @@ const PublicUserProfile = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/users/${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/users/${userId}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         });
         const data = await response.json();

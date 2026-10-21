@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, CheckCheck, MessageCircle, Users } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 import "./Notifications.css";
 
 const getNotificationText = (notification) => {
@@ -32,7 +33,7 @@ const Notifications = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("http://localhost:5000/api/notifications", {
+      const response = await fetch(`${API_BASE_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
       const data = await response.json();
@@ -48,7 +49,7 @@ const Notifications = () => {
   const openNotification = async (notification) => {
     if (!notification.isRead) {
       try {
-        await fetch(`http://localhost:5000/api/notifications/${notification._id}/read`, {
+        await fetch(`${API_BASE_URL}/api/notifications/${notification._id}/read`, {
           method: "PATCH",
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         });
@@ -59,7 +60,7 @@ const Notifications = () => {
 
   const markAllRead = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/notifications/read-all", {
+      const response = await fetch(`${API_BASE_URL}/api/notifications/read-all`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });

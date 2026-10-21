@@ -3,9 +3,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { ArrowLeft, MessageCircle, Search, Send, UserRound } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config/api";
 import "./Messages.css";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = `${API_BASE_URL}/api`;
 
 const getOtherPerson = (conversation, currentUserId) =>
   conversation?.participants?.find((person) => person._id !== currentUserId);
@@ -118,7 +119,7 @@ const Messages = () => {
   useEffect(() => {
     if (!conversationId || !token) return undefined;
     setChatReady(false);
-    const socket = io("http://localhost:5000", { auth: { token } });
+    const socket = io(API_BASE_URL, { auth: { token } });
     socketRef.current = socket;
     socket.on("connect", () => socket.emit("direct:join", { conversationId }, (result) => {
       if (result?.error) setError(result.error);

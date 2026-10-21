@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Profile = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/auth/me",
+          `${API_BASE_URL}/api/auth/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -72,7 +73,7 @@ const Profile = () => {
     setSaving(true);
     setNotice("");
     try {
-      const response = await fetch("http://localhost:5000/api/auth/me", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify({ ...profileForm, skills: profileForm.skills.split(",").map((skill) => skill.trim()).filter(Boolean) })

@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 
 import "./Ideas.css";
+import { API_BASE_URL } from "../config/api";
+
+const API_URL = `${API_BASE_URL}/api`;
 
 const IdeaDetails = () => {
   const { id } = useParams();
@@ -30,7 +33,7 @@ const IdeaDetails = () => {
   const loadRequests = useCallback(async () => {
     if (!token) return;
     try {
-      const response = await fetch("http://localhost:5000/api/collaborations/my-requests", {
+      const response = await fetch(`${API_URL}/collaborations/my-requests`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -44,7 +47,7 @@ const IdeaDetails = () => {
     const getIdea = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/ideas/${id}`
+          `${API_URL}/ideas/${id}`
         );
 
         const data = await response.json();
@@ -71,7 +74,7 @@ const IdeaDetails = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/auth/me",
+          `${API_URL}/auth/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -101,7 +104,7 @@ const IdeaDetails = () => {
     event.preventDefault();
     setMessage("");
     try {
-      const response = await fetch(`http://localhost:5000/api/collaborations/ideas/${id}/requests`, {
+      const response = await fetch(`${API_URL}/collaborations/ideas/${id}/requests`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ message: requestText, role: requestRole })
@@ -116,7 +119,7 @@ const IdeaDetails = () => {
 
   const respondToRequest = async (requestId, status) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/collaborations/${requestId}/status`, {
+      const response = await fetch(`${API_URL}/collaborations/${requestId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status })
@@ -126,7 +129,7 @@ const IdeaDetails = () => {
       setMessage("");
       await loadRequests();
       if (status === "accepted") {
-        const ideaResponse = await fetch(`http://localhost:5000/api/ideas/${id}`);
+        const ideaResponse = await fetch(`${API_URL}/ideas/${id}`);
         const ideaData = await ideaResponse.json();
         if (ideaResponse.ok) setIdea(ideaData.idea);
       }
@@ -141,7 +144,7 @@ const IdeaDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/ideas/${id}`,
+        `${API_URL}/ideas/${id}`,
         {
           method: "DELETE",
           headers: {

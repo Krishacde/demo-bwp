@@ -8,10 +8,11 @@ import {
 } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
 
 const AuthContext = createContext(null);
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = `${API_BASE_URL}/api`;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

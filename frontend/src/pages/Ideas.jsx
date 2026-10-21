@@ -4,6 +4,7 @@ import { Plus, Search } from "lucide-react";
 
 import IdeaCard from "../components/IdeaCard";
 import { categories, stages } from "../ideaOptions";
+import { API_BASE_URL } from "../config/api";
 import "./Ideas.css";
 
 const Ideas = () => {
@@ -35,7 +36,7 @@ const Ideas = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/ideas?${params.toString()}`
+          `${API_BASE_URL}/api/ideas?${params.toString()}`
         );
 
         const data = await response.json();

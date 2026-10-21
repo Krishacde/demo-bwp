@@ -1,0 +1,490 @@
+/* =========================================================
+   CreateIdea.css  —  Post / Edit Idea form
+   Scoped entirely under .ci-* so it never leaks into
+   other pages that import Ideas.css.
+   ========================================================= */
+
+
+/* ── Page shell ── */
+
+.ci-page {
+  min-height: calc(100vh - 76px);
+  padding: 48px 24px 80px;
+  background:
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(243, 107, 33, 0.08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 92% 85%,
+      rgba(243, 107, 33, 0.05),
+      transparent 25%
+    ),
+    var(--bg);
+}
+
+
+/* ── Page header ── */
+
+.ci-page-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  max-width: 1060px;
+  margin: 0 auto 40px;
+}
+
+.ci-header-icon {
+  flex-shrink: 0;
+
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 16px;
+
+  background: var(--primary);
+  color: #fff;
+
+  box-shadow: 0 8px 22px rgba(243, 107, 33, 0.28);
+}
+
+.ci-page-title {
+  margin: 0 0 4px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--text);
+}
+
+.ci-page-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+
+/* ── Two-column layout: sidebar + form ── */
+
+.ci-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  max-width: 1060px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+
+/* ── Sticky sidebar navigation ── */
+
+.ci-sidebar {
+  position: sticky;
+  top: 96px; /* below navbar */
+}
+
+.ci-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ci-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 9px 12px;
+
+  border-radius: 10px;
+
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.ci-nav-item:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.ci-nav-dot {
+  flex-shrink: 0;
+
+  width: 26px;
+  height: 26px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.ci-nav-item:hover .ci-nav-dot {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+
+/* ── Form wrapper ── */
+
+.ci-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ci-error-banner {
+  margin-bottom: 24px;
+  padding: 13px 16px;
+  border-radius: 10px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  border-left: 3px solid var(--danger);
+}
+
+.ci-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+
+/* ── Individual form section card ── */
+
+.ci-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px 36px;
+  box-shadow: var(--shadow-sm);
+  scroll-margin-top: 108px; /* navbar + breathing room */
+
+  transition: box-shadow 0.2s ease;
+}
+
+.ci-section:focus-within {
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 1px rgba(243, 107, 33, 0.18);
+}
+
+
+/* ── Section heading ── */
+
+.ci-section-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ci-section-number {
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: var(--primary-light);
+  color: var(--primary);
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.ci-section-title {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
+.ci-section-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+
+
+/* ── Field layout helpers ── */
+
+.ci-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.ci-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.ci-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+
+/* ── Labels ── */
+
+.ci-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.1px;
+}
+
+.ci-required {
+  color: var(--primary);
+  margin-left: 2px;
+}
+
+.ci-optional {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.ci-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+
+/* ── Inputs, textareas, selects ── */
+
+.ci-input {
+  width: 100%;
+  padding: 12px 15px;
+
+  background: var(--bg);
+  color: var(--text);
+
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+
+  font: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ci-input::placeholder {
+  color: var(--text-muted);
+  font-size: 13.5px;
+}
+
+.ci-input:hover {
+  border-color: color-mix(in srgb, var(--border) 40%, var(--primary) 60%);
+}
+
+.ci-input:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow:
+    0 0 0 3px rgba(243, 107, 33, 0.13),
+    0 2px 8px rgba(243, 107, 33, 0.06);
+}
+
+/* Textarea */
+.ci-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.65;
+}
+
+.ci-textarea--sm {
+  min-height: 90px;
+}
+
+/* Select — custom arrow */
+.ci-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a8a8a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+/* Number input — hide default spinners for cleanliness */
+.ci-input[type="number"] {
+  -moz-appearance: textfield;
+}
+.ci-input[type="number"]::-webkit-outer-spin-button,
+.ci-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* ── Submit bar ── */
+
+.ci-submit-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+
+  padding: 24px 36px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.ci-submit-error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.ci-submit-btn {
+  padding: 14px 40px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: var(--primary);
+  color: #fff;
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 20px rgba(243, 107, 33, 0.28),
+    0 2px 6px rgba(243, 107, 33, 0.15);
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.ci-submit-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 26px rgba(243, 107, 33, 0.32),
+    0 4px 10px rgba(243, 107, 33, 0.18);
+}
+
+.ci-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(243, 107, 33, 0.22);
+}
+
+.ci-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* ── Tablet (hide sidebar, form goes full width) ── */
+
+@media (max-width: 900px) {
+  .ci-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ci-sidebar {
+    display: none;
+  }
+
+  .ci-page-header {
+    margin-bottom: 28px;
+  }
+}
+
+
+/* ── Mobile ── */
+
+@media (max-width: 640px) {
+  .ci-page {
+    padding: 28px 16px 60px;
+  }
+
+  .ci-page-header {
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .ci-header-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+
+  .ci-page-title {
+    font-size: 22px;
+  }
+
+  .ci-section {
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+
+  .ci-row {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .ci-submit-bar {
+    padding: 20px;
+    align-items: stretch;
+  }
+
+  .ci-submit-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

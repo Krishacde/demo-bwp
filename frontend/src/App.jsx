@@ -232,6 +232,7 @@ import Notifications from "./pages/Notifications";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { API_BASE_URL } from "./config/api";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -261,7 +262,7 @@ const Navbar = () => {
     }
     const loadUnreadCount = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/notifications/unread-count", {
+        const response = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         });
         const data = await response.json();

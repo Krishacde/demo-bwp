@@ -485,9 +485,10 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config/api";
 import "./Dashboard.css";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = `${API_BASE_URL}/api`;
 
 const FounderDashboard = () => {
   const { user } = useAuth();
