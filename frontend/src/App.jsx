@@ -3,24 +3,39 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Link
+  Link,
+  useLocation
 } from "react-router-dom";
 
 import {
   Lightbulb,
   Moon,
-  Sun
+  Sun,
+  Users as UsersIcon,
+  User,
+  LogIn
 } from "lucide-react";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
+import Users from "./pages/Users";
+import UserProfile from "./pages/UserProfile";
 
 const Navbar = () => {
+  const location = useLocation();
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
   });
+
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+
+  useEffect(() => {
+    // Sync token on location change
+    setToken(localStorage.getItem("token"));
+  }, [location]);
 
   useEffect(() => {
     document.documentElement.setAttribute(
@@ -49,17 +64,38 @@ const Navbar = () => {
         </Link>
 
         <div className="nav-links">
-          <Link to="/" className="nav-link">
+          <Link
+            to="/"
+            className={`nav-link ${location.pathname === "/" ? "nav-link-active" : ""}`}
+          >
             Home
           </Link>
 
-          <Link to="/login" className="nav-link">
-            Login
+          <Link
+            to="/users"
+            className={`nav-link ${location.pathname.startsWith("/users") ? "nav-link-active" : ""}`}
+          >
+            <UsersIcon size={16} /> Explore Users
           </Link>
 
-          <Link to="/register" className="btn btn-primary">
-            Get Started
-          </Link>
+          {token ? (
+            <Link
+              to="/profile"
+              className={`nav-link ${location.pathname.startsWith("/profile") ? "nav-link-active" : ""}`}
+            >
+              <User size={16} /> My Profile
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="nav-link">
+                <LogIn size={16} /> Login
+              </Link>
+
+              <Link to="/register" className="btn btn-primary btn-sm">
+                Get Started
+              </Link>
+            </>
+          )}
 
           <button
             className="theme-button"
@@ -105,6 +141,21 @@ const App = () => {
           <Route
             path="/profile"
             element={<Profile />}
+          />
+
+          <Route
+            path="/profile/edit"
+            element={<EditProfile />}
+          />
+
+          <Route
+            path="/users"
+            element={<Users />}
+          />
+
+          <Route
+            path="/users/:id"
+            element={<UserProfile />}
           />
         </Routes>
 

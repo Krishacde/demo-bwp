@@ -47,7 +47,61 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters"]
-    }
+    },
+
+    bio: {
+      type: String,
+      default: "",
+      trim: true
+    },
+
+    skills: {
+      type: [String],
+      default: []
+    },
+
+    avatar: {
+      type: String,
+      default: ""
+    },
+
+    location: {
+      type: String,
+      default: "",
+      trim: true
+    },
+
+    website: {
+      type: String,
+      default: "",
+      trim: true
+    },
+
+    github: {
+      type: String,
+      default: "",
+      trim: true
+    },
+
+    linkedin: {
+      type: String,
+      default: "",
+      trim: true
+    },
+
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
+
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ]
   },
   {
     timestamps: true
